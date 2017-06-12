@@ -1,0 +1,780 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/zh-Hans/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/zh-Hans/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/zh-Hans/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Statistics,Machine Learning," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/zh-Hans/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="What is the Bayes Estimation?If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estima">
+<meta name="keywords" content="Statistics,Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bayes Estimation and Relationship of MSE, MAP and MAE">
+<meta property="og:url" content="http://dzyang.xyz/2017/02/20/bayes-estimation/index.html">
+<meta property="og:site_name" content="写了再说">
+<meta property="og:description" content="What is the Bayes Estimation?If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estima">
+<meta property="og:updated_time" content="2017-06-12T06:20:53.941Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bayes Estimation and Relationship of MSE, MAP and MAE">
+<meta name="twitter:description" content="What is the Bayes Estimation?If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estima">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/zh-Hans/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dzyang.xyz/2017/02/20/bayes-estimation/"/>
+
+
+
+
+
+  <title>Bayes Estimation and Relationship of MSE, MAP and MAE | 写了再说</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/zh-Hans/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写了再说</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">有输出才有价值</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-languages">
+          <a href="/zh-Hans/../" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            English
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/zh-Hans/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/zh-Hans/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/zh-Hans/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dzyang.xyz/zh-Hans/2017/02/20/bayes-estimation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Loucs Yang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/zh-Hans/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写了再说">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Bayes Estimation and Relationship of MSE, MAP and MAE
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-20T00:00:00-05:00">
+                2017-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-Hans/categories/Academy/" itemprop="url" rel="index">
+                    <span itemprop="name">Academy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="What-is-the-Bayes-Estimation"><a href="#What-is-the-Bayes-Estimation" class="headerlink" title="What is the Bayes Estimation?"></a>What is the Bayes Estimation?</h2><p>If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estimation(PE).</p>
+<p>A popular method for PEs is Maximum Likelihood Estimation, in which we determine the parameter values simply by finding the values which make the likelihood of the known distribution a maximum. No other requirement is needed for the estimation.<br>Bayesians, however, consider these parameters as the Random variables(RV). So the parameters should have their own distributions and probabilities called “Priori probability”. The “Priori probability” makes Bayes Estimation differ from Maximum Likelihood, definitely. It’s the greatest strength as well as possible weakness that Bayes Estimation has.</p>
+<h2 id="Mathematics-behind-it"><a href="#Mathematics-behind-it" class="headerlink" title="Mathematics behind it"></a>Mathematics behind it</h2><p>Define a non-negative Cost Function, or Loss Function, $C(y,\hat{y})$ to describe the difference between the estimated and true values. And set the $\hat{y}$ to minimize the expected cost, or risk. This $\hat{y}$ value would be selected as the parameter value.<br>$$ R \equiv E{C(y,\hat{y})} = \int _{-\infty} ^\infty \int_{-\infty} ^ \infty C(y,\hat{y}) \cdot f_{y,\mathbf{x}}(y, \mathbf{x})\mathrm{d} \mathbf{x} \mathrm{d}y \\= \int _{-\infty}^{\infty} \underbrace{\left[\int _{-\infty}^{\infty} C(y,\hat{y}) \cdot f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y \right]}_{I(y)} \cdot f_\mathbf{x}(\mathbf{x})\mathrm{d}\mathbf{x}$$<br>where</p>
+<ul>
+<li><strong><em>X</em></strong> is the samples $x_1, x_2 …,x_n$ from observations</li>
+<li>$y$ is the “undetermined” parameter</li>
+<li>$\hat{y}$ is the estimator</li>
+<li>$f_{y|\mathbf{x}}(y| \mathbf{x})$ is the conditional probability density function of y given <strong><em>x</em></strong></li>
+</ul>
+<p>Since $f_\mathbf{x}(\mathbf{x}) &gt; 0$, we only need to minimize $I(y)$ to make $R$ the minimum. This can be done by seeking a point $y$ where the first derivative of $I({y}) $ is zero.</p>
+<p>This is how Bayes Estimation works. More generally speaking, we first build a evaluation to exactly evaluate the difference between $y$  and $\hat{y}$, then find a specific $\hat{y}$ to make the difference minimal.  </p>
+<h2 id="Some-popular-Cost-Functions"><a href="#Some-popular-Cost-Functions" class="headerlink" title="Some popular Cost Functions"></a>Some popular Cost Functions</h2><p>There are many mathematical definitions, or cost functions, about the difference above. They are used to various purpose and situations, but can be identical in certain cases. The following are some popular cost functions and the Bayes Estimations based on them.</p>
+<ol>
+<li><p>Mean Squared Error<br>$$C(y,\hat{y}) \equiv |y - \hat y|^2$$ when contiguous, take the first derivative of $I(y)$ and can get:<br>$$\hat y _{MSE} = \int _{-\infty}^{\infty} y \cdot f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y = E[y|\mathbf{x}]$$Notice the $\hat y _{MSE}$ is the expected $y$ given the observations $\mathbf{x}$</p>
+</li>
+<li><p>Maximum A Posteriori<br>$$C(y,\hat{y}) \equiv \begin{cases} 0, &amp;|y-\hat{y}|&lt; \varepsilon \\ 1,&amp;else\end{cases}$$<br>then<br>$$ I(y) = \int _{-\infty}^{\infty} C(y,\hat{y}) \cdot f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y = \int_{|y-\hat{y}|\geq\varepsilon} f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y \\=<br>1 -\int_{|y-\hat{y}|\leq\varepsilon}  f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y<br>$$when the right part $\int_{|y-\hat{y}|\leq\varepsilon}  f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y$  gets maximized, $I(y)$ is minimized, then $$<br>\hat y_{MAP} = \underset{y}{\operatorname{argmax}}  f_{y|\mathbf{x}}(y| \mathbf{x})<br>$$</p>
+</li>
+<li><p>Mean Absolute Error<br>$$C(y,\hat{y}) \equiv |y - \hat y|$$ then when $I(y)$ is minimized,<br>$$ \hat y_{MAE} = \bf{median}\ \  \rm{of}\ \ f_{y|\bf{x}}(y| \mathbf{x}) ,\ \,$$or<br>$$\int^{\hat y_{MAE}}_{-\infty} f_{y|\mathbf{x}}(y|\mathbf{x})\mathrm{d}y = \int_{\hat y_{MAE}}^{\infty} f_{y|\mathbf{x}}(y|\mathbf{x})\mathrm{d}y$$</p>
+<h2 id="Relationship-among-MSE-MAP-and-MAE"><a href="#Relationship-among-MSE-MAP-and-MAE" class="headerlink" title="Relationship among MSE, MAP and MAE"></a>Relationship among MSE, MAP and MAE</h2></li>
+</ol>
+<p>In fact, they are just the different types of cost functions for Bayes Estimation. the MAP looks extremely like the ML(maximum likelihood estimation) in form, although in principle they are totally different, because MAP is belong to Bayesian and ML is belong to Frequentist.</p>
+<ol>
+<li><p>MAP and ML<br>$$\begin{cases} \hat y_{MAP} = \underset{y}{\operatorname{argmax}}  f_{y|\mathbf{x}}(y| \mathbf{x}),&amp;(1) \\ \hat y_{ML} = \underset{y}{\operatorname{argmax}}  f_{\mathbf{x}|y}(\mathbf{x}|y), &amp;(2)<br>\end{cases}$$<br>According to Bayes’ Formula, $f_{y|\mathbf{x}}(y| \mathbf{x}) = \frac {f_{\mathbf{x}|y}(\mathbf{x}|y)\cdot f_y(y)}{f_x(x)} $, then<br>$$\hat y_{MAP} =<br>\underset{y}{\operatorname{argmax}}  \frac {f_{\mathbf{x}|y}(\mathbf{x}|y)\cdot f_y(y)}{f_x(x)} =<br>\underset{y}{\operatorname{argmax}} f_{\mathbf{x}|y}(\mathbf{x}|y)\cdot f_y(y) \ \ (3)$$ where $f_x(x)$ is not a function of $y$ and has no effect on $y$ value.<br>Comparing (1) and (3), we see the MAP can be got from ML by multiplying the parameter’s “Priori probability”. </p>
+</li>
+<li><p>Symmetry<br>When the graph of $f_{y|\mathbf{x}}(y| \mathbf{x})$ is symmetric about y-axis, $$\hat y_{MAE} = \hat y_{MSE}$$ which means the $\hat y$ for mean suquare error can also make the mean absolute error at the same time.</p>
+</li>
+<li>Symmetric and Unimodal<br>When the graph of $f_{y|\mathbf{x}}(y| \mathbf{x})$ is symmetric and unimodal as well, $$\hat y_{MAE} = \hat y_{MSE} = \hat y_{MAP}$$</li>
+</ol>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The key of Bayes Estimation is to take the “Priori Probability” into account. It should be better than ML, but it’s hard to obtain the “Priori Probability” in practice and a bad “Priori Probability” ,in turn, may lead the BE doesn’t work. </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Loucs Yang
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://dzyang.xyz/2017/02/20/bayes-estimation/" title="Bayes Estimation and Relationship of MSE, MAP and MAE">http://dzyang.xyz/2017/02/20/bayes-estimation/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+       本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议，转载请保留作者及出处。
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/zh-Hans/tags/Statistics/" rel="tag"># Statistics</a>
+          
+            <a href="/zh-Hans/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+<!--           <img class="site-author-image" itemprop="image"
+               src="/zh-Hans/images/avatar.gif"
+               alt="Loucs Yang" /> -->
+          <p class="site-author-name" itemprop="name">Loucs Yang</p>
+           
+              <p class="site-description motion-element" itemprop="description">locus@udel.edu</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/zh-Hans/archives">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/zh-Hans/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/zh-Hans/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-Bayes-Estimation"><span class="nav-number">1.</span> <span class="nav-text">What is the Bayes Estimation?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mathematics-behind-it"><span class="nav-number">2.</span> <span class="nav-text">Mathematics behind it</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Some-popular-Cost-Functions"><span class="nav-number">3.</span> <span class="nav-text">Some popular Cost Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Relationship-among-MSE-MAP-and-MAE"><span class="nav-number">4.</span> <span class="nav-text">Relationship among MSE, MAP and MAE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-home"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Loucs Yang</span>
+</div>
+
+<!-- 
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+ -->
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/zh-Hans/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/zh-Hans/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/zh-Hans/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/zh-Hans/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
