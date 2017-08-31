@@ -74,7 +74,7 @@
 <link href="/zh-Hans/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Statistics,Machine Learning," />
+  <meta name="keywords" content="动态规划,算法," />
 
 
 
@@ -90,17 +90,17 @@
 
 
 
-<meta name="description" content="What is the Bayes Estimation?If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estima">
-<meta name="keywords" content="Statistics,Machine Learning">
+<meta name="description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
+<meta name="keywords" content="动态规划,算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Bayes Estimation and Relationship of MSE, MAP and MAE">
-<meta property="og:url" content="http://dzyang.xyz/2017/02/20/bayes-estimation/index.html">
+<meta property="og:title" content="动态规划及其常见类型">
+<meta property="og:url" content="http://dzyang.xyz/2017/03/10/动态规划及其常见类型/index.html">
 <meta property="og:site_name" content="写了再说">
-<meta property="og:description" content="What is the Bayes Estimation?If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estima">
-<meta property="og:updated_time" content="2017-06-12T06:20:53.941Z">
+<meta property="og:description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
+<meta property="og:updated_time" content="2017-08-31T07:16:14.381Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Bayes Estimation and Relationship of MSE, MAP and MAE">
-<meta name="twitter:description" content="What is the Bayes Estimation?If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estima">
+<meta name="twitter:title" content="动态规划及其常见类型">
+<meta name="twitter:description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
 
 
 
@@ -128,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://dzyang.xyz/2017/02/20/bayes-estimation/"/>
+  <link rel="canonical" href="http://dzyang.xyz/2017/03/10/动态规划及其常见类型/"/>
 
 
 
 
 
-  <title>Bayes Estimation and Relationship of MSE, MAP and MAE | 写了再说</title>
+  <title>动态规划及其常见类型 | 写了再说</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -263,7 +263,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dzyang.xyz/zh-Hans/2017/02/20/bayes-estimation/">
+    <link itemprop="mainEntityOfPage" href="http://dzyang.xyz/zh-Hans/2017/03/10/动态规划及其常见类型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Loucs Yang">
@@ -284,7 +284,7 @@
             
             
               
-                Bayes Estimation and Relationship of MSE, MAP and MAE
+                动态规划及其常见类型
               
             
           </h1>
@@ -299,8 +299,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-20T00:00:00-05:00">
-                2017-02-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-10T00:00:00-05:00">
+                2017-03-10
               </time>
             
 
@@ -356,36 +356,108 @@
       
 
       
-        <h2 id="What-is-the-Bayes-Estimation"><a href="#What-is-the-Bayes-Estimation" class="headerlink" title="What is the Bayes Estimation?"></a>What is the Bayes Estimation?</h2><p>If the distribution of a stochastic event is known, and yet its parameter value is unknown, then we call the process of determining the parameter value is Parameter Estimation(PE).</p>
-<p>A popular method for PEs is Maximum Likelihood Estimation, in which we determine the parameter values simply by finding the values which make the likelihood of the known distribution a maximum. No other requirement is needed for the estimation.<br>Bayesians, however, consider these parameters as the Random variables(RV). So the parameters should have their own distributions and probabilities called “Priori probability”. The “Priori probability” makes Bayes Estimation differ from Maximum Likelihood, definitely. It’s the greatest strength as well as possible weakness that Bayes Estimation has.</p>
-<h2 id="Mathematics-behind-it"><a href="#Mathematics-behind-it" class="headerlink" title="Mathematics behind it"></a>Mathematics behind it</h2><p>Define a non-negative Cost Function, or Loss Function, $C(y,\hat{y})$ to describe the difference between the estimated and true values. And set the $\hat{y}$ to minimize the expected cost, or risk. This $\hat{y}$ value would be selected as the parameter value.<br>$$ R \equiv E{C(y,\hat{y})} = \int _{-\infty} ^\infty \int_{-\infty} ^ \infty C(y,\hat{y}) \cdot f_{y,\mathbf{x}}(y, \mathbf{x})\mathrm{d} \mathbf{x} \mathrm{d}y \\= \int _{-\infty}^{\infty} \underbrace{\left[\int _{-\infty}^{\infty} C(y,\hat{y}) \cdot f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y \right]}_{I(y)} \cdot f_\mathbf{x}(\mathbf{x})\mathrm{d}\mathbf{x}$$<br>where</p>
-<ul>
-<li><strong><em>X</em></strong> is the samples $x_1, x_2 …,x_n$ from observations</li>
-<li>$y$ is the “undetermined” parameter</li>
-<li>$\hat{y}$ is the estimator</li>
-<li>$f_{y|\mathbf{x}}(y| \mathbf{x})$ is the conditional probability density function of y given <strong><em>x</em></strong></li>
-</ul>
-<p>Since $f_\mathbf{x}(\mathbf{x}) &gt; 0$, we only need to minimize $I(y)$ to make $R$ the minimum. This can be done by seeking a point $y$ where the first derivative of $I({y}) $ is zero.</p>
-<p>This is how Bayes Estimation works. More generally speaking, we first build a evaluation to exactly evaluate the difference between $y$  and $\hat{y}$, then find a specific $\hat{y}$ to make the difference minimal.  </p>
-<h2 id="Some-popular-Cost-Functions"><a href="#Some-popular-Cost-Functions" class="headerlink" title="Some popular Cost Functions"></a>Some popular Cost Functions</h2><p>There are many mathematical definitions, or cost functions, about the difference above. They are used to various purpose and situations, but can be identical in certain cases. The following are some popular cost functions and the Bayes Estimations based on them.</p>
+        <h3 id="什么是动态规划？"><a href="#什么是动态规划？" class="headerlink" title="什么是动态规划？"></a>什么是动态规划？</h3><p>简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。</p>
+<p>适用于动态规划的问题有以下几个特点：</p>
 <ol>
-<li><p>Mean Squared Error<br>$$C(y,\hat{y}) \equiv |y - \hat y|^2$$ when contiguous, take the first derivative of $I(y)$ and can get:<br>$$\hat y _{MSE} = \int _{-\infty}^{\infty} y \cdot f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y = E[y|\mathbf{x}]$$Notice the $\hat y _{MSE}$ is the expected $y$ given the observations $\mathbf{x}$</p>
-</li>
-<li><p>Maximum A Posteriori<br>$$C(y,\hat{y}) \equiv \begin{cases} 0, &amp;|y-\hat{y}|&lt; \varepsilon \\ 1,&amp;else\end{cases}$$<br>then<br>$$ I(y) = \int _{-\infty}^{\infty} C(y,\hat{y}) \cdot f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y = \int_{|y-\hat{y}|\geq\varepsilon} f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y \\=<br>1 -\int_{|y-\hat{y}|\leq\varepsilon}  f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y<br>$$when the right part $\int_{|y-\hat{y}|\leq\varepsilon}  f_{y|\mathbf{x}}(y| \mathbf{x})\mathrm{d}y$  gets maximized, $I(y)$ is minimized, then $$<br>\hat y_{MAP} = \underset{y}{\operatorname{argmax}}  f_{y|\mathbf{x}}(y| \mathbf{x})<br>$$</p>
-</li>
-<li><p>Mean Absolute Error<br>$$C(y,\hat{y}) \equiv |y - \hat y|$$ then when $I(y)$ is minimized,<br>$$ \hat y_{MAE} = \bf{median}\ \  \rm{of}\ \ f_{y|\bf{x}}(y| \mathbf{x}) ,\ \,$$or<br>$$\int^{\hat y_{MAE}}_{-\infty} f_{y|\mathbf{x}}(y|\mathbf{x})\mathrm{d}y = \int_{\hat y_{MAE}}^{\infty} f_{y|\mathbf{x}}(y|\mathbf{x})\mathrm{d}y$$</p>
-<h2 id="Relationship-among-MSE-MAP-and-MAE"><a href="#Relationship-among-MSE-MAP-and-MAE" class="headerlink" title="Relationship among MSE, MAP and MAE"></a>Relationship among MSE, MAP and MAE</h2></li>
+<li>当前子问题的解依赖于之前子问题的解；</li>
+<li>只要求最值、判定是否或求方案总数，而不要求所有过程中的结果；</li>
+<li>输入量通常是序列或者字符串，而不是集合；</li>
 </ol>
-<p>In fact, they are just the different types of cost functions for Bayes Estimation. the MAP looks extremely like the ML(maximum likelihood estimation) in form, although in principle they are totally different, because MAP is belong to Bayesian and ML is belong to Frequentist.</p>
+<h3 id="如何构建动态规划？"><a href="#如何构建动态规划？" class="headerlink" title="如何构建动态规划？"></a>如何构建动态规划？</h3><p>关键在于定义问题的状态和找出状态转移方程。“<strong>状态</strong>”就是子问题的解，“<strong>状态转移方程</strong>”就是递推关系式，描述如何从当前解得到下一步的解。写动态规划代码的步骤为：</p>
 <ol>
-<li><p>MAP and ML<br>$$\begin{cases} \hat y_{MAP} = \underset{y}{\operatorname{argmax}}  f_{y|\mathbf{x}}(y| \mathbf{x}),&amp;(1) \\ \hat y_{ML} = \underset{y}{\operatorname{argmax}}  f_{\mathbf{x}|y}(\mathbf{x}|y), &amp;(2)<br>\end{cases}$$<br>According to Bayes’ Formula, $f_{y|\mathbf{x}}(y| \mathbf{x}) = \frac {f_{\mathbf{x}|y}(\mathbf{x}|y)\cdot f_y(y)}{f_x(x)} $, then<br>$$\hat y_{MAP} =<br>\underset{y}{\operatorname{argmax}}  \frac {f_{\mathbf{x}|y}(\mathbf{x}|y)\cdot f_y(y)}{f_x(x)} =<br>\underset{y}{\operatorname{argmax}} f_{\mathbf{x}|y}(\mathbf{x}|y)\cdot f_y(y) \ \ (3)$$ where $f_x(x)$ is not a function of $y$ and has no effect on $y$ value.<br>Comparing (1) and (3), we see the MAP can be got from ML by multiplying the parameter’s “Priori probability”. </p>
-</li>
-<li><p>Symmetry<br>When the graph of $f_{y|\mathbf{x}}(y| \mathbf{x})$ is symmetric about y-axis, $$\hat y_{MAE} = \hat y_{MSE}$$ which means the $\hat y$ for mean suquare error can also make the mean absolute error at the same time.</p>
-</li>
-<li>Symmetric and Unimodal<br>When the graph of $f_{y|\mathbf{x}}(y| \mathbf{x})$ is symmetric and unimodal as well, $$\hat y_{MAE} = \hat y_{MSE} = \hat y_{MAP}$$</li>
+<li>定义状态；</li>
+<li>设定初始值；</li>
+<li>在循环中用状态转移方程不断迭代得到子问题的解直至解决总问题。</li>
 </ol>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The key of Bayes Estimation is to take the “Priori Probability” into account. It should be better than ML, but it’s hard to obtain the “Priori Probability” in practice and a bad “Priori Probability” ,in turn, may lead the BE doesn’t work. </p>
+<h3 id="常见的动态规划类型"><a href="#常见的动态规划类型" class="headerlink" title="常见的动态规划类型"></a>常见的动态规划类型</h3><h4 id="坐标型"><a href="#坐标型" class="headerlink" title="坐标型"></a><strong>坐标型</strong></h4><p>输入量通常是二维坐标。典型题目为<a href="http://www.lintcode.com/en/problem/unique-paths-ii/" target="_blank" rel="external">Unique Path</a>和<a href="http://www.lintcode.com/en/problem/triangle/" target="_blank" rel="external">Triangle</a>。此类型不需要在定义状态时加一行一列，也因此需要考虑输入为None的处理，优化空间时，采用rolling list。<br>例题：</p>
+<blockquote>
+<p>有一个机器人的位于一个 m × n 个网格左上角。 机器人每一时刻只能向下或者向右移动一步。机器人试图达到网格的右下角。网格中的障碍和空位置分别用1和0来表示。问有多少条不同的路径？</p>
+</blockquote>
+<pre><code>class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid):
+        if not obstacleGrid:
+            return None
+        row = len(obstacleGrid)
+        col = len(obstacleGrid[0])
+        dp = [[0 for j in range(col)] for i in range(row)]
 
+        for i in range(row):
+            for j in range(col):
+                if obstacleGrid[i][j] == 1:
+                    dp[i][j] = 0
+                elif i == 0 and j == 0:
+                    dp[i][j] = 1
+                elif i == 0:
+                    dp[0][j] = dp[0][j-1]
+                elif j == 0:
+                    dp[i][0] = dp[i-1][0]
+                else:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[-1][-1]
+</code></pre><p>采用rolling list可将额外空间复杂的优化至 O（col）,代码如下</p>
+<pre><code>...
+dp = [0] * col
+for i in range(row):
+    for j in range(col):
+        if obstacleGrid[i][j] == 1:
+            dp[j] = 0
+        elif i == 0 and j == 0:
+            dp[j] = 1
+        elif i == 0:
+            dp[j] = dp[j-1]
+        elif j == 0:
+            dp[j] = dp[j]
+        else:
+            dp[j] = dp[j] + dp[j-1]
+return dp[-1]   
+</code></pre><h4 id="单序列型"><a href="#单序列型" class="headerlink" title="单序列型"></a><strong>单序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/maximum-product-subarray/" target="_blank" rel="external">Maximum Product Subarray</a>，输入量通常是一个序列，定义状态时常在开头增加一项，也因而不需要额外处理输入为None的情形。空间优化通常用一个变量代替一个列表，可从O(n)至O（1）。</p>
+<h4 id="双序列型"><a href="#双序列型" class="headerlink" title="双序列型"></a><strong>双序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/edit-distance/" target="_blank" rel="external">Edit Distance</a>和<a href="http://www.lintcode.com/en/problem/word-break/" target="_blank" rel="external">Word Break</a>，通常是研究两个序列或字符串之间的关系，基础情形下将状态定义成二维的，常增加一行一列来设置初始值和处理None输入。空间优化通常是用rolling list将额外空间复杂度从$O（n^2)$降至$O(n)$。<br>例题：</p>
+<blockquote>
+<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)<br>You have the following 3 operations permitted on a word:<br>Insert a character<br>Delete a character<br>Replace a character<br>Example<br>Given word1 = “mart” and word2 = “karma”, return 3.</p>
+</blockquote>
+<pre><code>class Solution: 
+# @param word1 &amp; word2: Two string.
+# @return: The minimum number of steps.
+
+# dp O(m*n) where m and n represent length of word1 and word2  space O(m*n)
+def minDistance(self, word1, word2):
+    row = len(word1) + 1
+    col = len(word2) + 1
+    dp = [[sys.maxint for j in range(col)] for i in range(row)]
+    for i in range(row):
+        dp[i][0] = i
+    for j in range(col):
+        dp[0][j] = j
+    for i in range(1, row):
+        for j in range(1, col):
+            if word1[i-1] != word2[j-1]:
+                dp[i][j] = min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) + 1
+            else:
+                dp[i][j] = min(dp[i-1][j-1], dp[i-1][j]+1, dp[i][j-1]+1)
+    return dp[-1][-1]
+</code></pre><h4 id="背包型"><a href="#背包型" class="headerlink" title="背包型"></a><strong>背包型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/backpack/" target="_blank" rel="external">0/1背包问题</a>，</p>
+<blockquote>
+<p>有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。</p>
+</blockquote>
+<p>处理步骤与双序列相似。背包问题属于NP-Compelete问题,参考<a href="http://love-oriented.com/pack/P01.html" target="_blank" rel="external">背包问题九讲</a>，背包问题的状态转移方程为 $f[i][v]=max{f[i-1][v],f[i-1][v-c[i]]+w[i]}$。在采用rolling list优化空间复杂度时，需将内循环顺序反过来，伪代码如下：</p>
+<pre><code>for i=1..N
+for v=V..0
+    f[v]=max{f[v],f[v-c[i]]+w[i]};
+</code></pre><p>空间复杂度优化过的代码如下：</p>
+<pre><code>class Solution:
+# @param m: An integer m denotes the size of a backpack
+# @param A: Given n items with size A[i]
+# @return: The maximum size
+
+def backPack(self, m, A):
+    row = len(A) + 1
+    dp = [0]*(m+1)
+    for i in range(1, row):
+        bound = max(m - sum(A[i-1:]), A[i-1])
+        for j in range(m, bound-1, -1):
+            dp[j] = max(dp[j], dp[j - A[i-1]] + A[i-1])
+    return dp[-1]
+</code></pre>
       
     </div>
 
@@ -413,7 +485,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://dzyang.xyz/2017/02/20/bayes-estimation/" title="Bayes Estimation and Relationship of MSE, MAP and MAE">http://dzyang.xyz/2017/02/20/bayes-estimation/</a>
+      <a href="http://dzyang.xyz/2017/03/10/动态规划及其常见类型/" title="动态规划及其常见类型">http://dzyang.xyz/2017/03/10/动态规划及其常见类型/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -429,9 +501,9 @@
       
         <div class="post-tags">
           
-            <a href="/zh-Hans/tags/Statistics/" rel="tag"># Statistics</a>
+            <a href="/zh-Hans/tags/动态规划/" rel="tag"># 动态规划</a>
           
-            <a href="/zh-Hans/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+            <a href="/zh-Hans/tags/算法/" rel="tag"># 算法</a>
           
         </div>
       
@@ -444,15 +516,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/zh-Hans/2017/03/10/动态规划及其常见类型/" rel="next" title="动态规划及其常见类型">
-                <i class="fa fa-chevron-left"></i> 动态规划及其常见类型
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/zh-Hans/2017/02/20/bayes-estimation/" rel="prev" title="Bayes Estimation and Relationship of MSE, MAP and MAE">
+                Bayes Estimation and Relationship of MSE, MAP and MAE <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -581,7 +653,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-Bayes-Estimation"><span class="nav-number">1.</span> <span class="nav-text">What is the Bayes Estimation?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mathematics-behind-it"><span class="nav-number">2.</span> <span class="nav-text">Mathematics behind it</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Some-popular-Cost-Functions"><span class="nav-number">3.</span> <span class="nav-text">Some popular Cost Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Relationship-among-MSE-MAP-and-MAE"><span class="nav-number">4.</span> <span class="nav-text">Relationship among MSE, MAP and MAE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是动态规划？"><span class="nav-number">1.</span> <span class="nav-text">什么是动态规划？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何构建动态规划？"><span class="nav-number">2.</span> <span class="nav-text">如何构建动态规划？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的动态规划类型"><span class="nav-number">3.</span> <span class="nav-text">常见的动态规划类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#坐标型"><span class="nav-number">3.1.</span> <span class="nav-text">坐标型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单序列型"><span class="nav-number">3.2.</span> <span class="nav-text">单序列型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双序列型"><span class="nav-number">3.3.</span> <span class="nav-text">双序列型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#背包型"><span class="nav-number">3.4.</span> <span class="nav-text">背包型</span></a></li></ol></li></ol></div>
             
 
           </div>
