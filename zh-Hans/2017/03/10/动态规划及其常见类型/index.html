@@ -97,7 +97,7 @@
 <meta property="og:url" content="http://dzyang.xyz/2017/03/10/动态规划及其常见类型/index.html">
 <meta property="og:site_name" content="写了再说">
 <meta property="og:description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
-<meta property="og:updated_time" content="2017-08-31T21:20:15.998Z">
+<meta property="og:updated_time" content="2017-08-31T21:43:47.944Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="动态规划及其常见类型">
 <meta name="twitter:description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
@@ -373,69 +373,14 @@
 <blockquote>
 <p>有一个机器人的位于一个 m × n 个网格左上角。 机器人每一时刻只能向下或者向右移动一步。机器人试图达到网格的右下角。网格中的障碍和空位置分别用1和0来表示。问有多少条不同的路径？</p>
 </blockquote>
-<pre><code>class Solution:
-    def uniquePathsWithObstacles(self, obstacleGrid):
-        if not obstacleGrid:
-            return None
-        row = len(obstacleGrid)
-        col = len(obstacleGrid[0])
-        dp = [[0 for j in range(col)] for i in range(row)]
-
-        for i in range(row):
-            for j in range(col):
-                if obstacleGrid[i][j] == 1:
-                    dp[i][j] = 0
-                elif i == 0 and j == 0:
-                    dp[i][j] = 1
-                elif i == 0:
-                    dp[0][j] = dp[0][j-1]
-                elif j == 0:
-                    dp[i][0] = dp[i-1][0]
-                else:
-                    dp[i][j] = dp[i-1][j] + dp[i][j-1]
-        return dp[-1][-1]
-</code></pre><p>采用rolling list可将额外空间复杂的优化至 O（col）,代码如下</p>
-<pre><code>...
-dp = [0] * col
-for i in range(row):
-    for j in range(col):
-        if obstacleGrid[i][j] == 1:
-            dp[j] = 0
-        elif i == 0 and j == 0:
-            dp[j] = 1
-        elif i == 0:
-            dp[j] = dp[j-1]
-        elif j == 0:
-            dp[j] = dp[j]
-        else:
-            dp[j] = dp[j] + dp[j-1]
-return dp[-1]   
-</code></pre><h4 id="单序列型"><a href="#单序列型" class="headerlink" title="单序列型"></a><strong>单序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/maximum-product-subarray/" target="_blank" rel="external">Maximum Product Subarray</a>，输入量通常是一个序列，定义状态时常在开头增加一项，也因而不需要额外处理输入为None的情形。空间优化通常用一个变量代替一个列表，可从$O(n)$优化至$O(1)$。</p>
-<h4 id="双序列型"><a href="#双序列型" class="headerlink" title="双序列型"></a><strong>双序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/edit-distance/" target="_blank" rel="external">Edit Distance</a>和<a href="http://www.lintcode.com/en/problem/word-break/" target="_blank" rel="external">Word Break</a>，通常是研究两个序列或字符串之间的关系，基础情形下将状态定义成二维的，常增加一行一列来设置初始值和处理None输入。空间优化通常是用rolling list将额外空间复杂度从$O（n^2)$降至$O(n)$。<br>例题：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">uniquePathsWithObstacles</span><span class="params">(self, obstacleGrid)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> obstacleGrid:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line">        row = len(obstacleGrid)</div><div class="line">        col = len(obstacleGrid[<span class="number">0</span>])</div><div class="line">        dp = [[<span class="number">0</span> <span class="keyword">for</span> j <span class="keyword">in</span> range(col)] <span class="keyword">for</span> i <span class="keyword">in</span> range(row)]</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(row):</div><div class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(col):</div><div class="line">                <span class="keyword">if</span> obstacleGrid[i][j] == <span class="number">1</span>:</div><div class="line">                    dp[i][j] = <span class="number">0</span></div><div class="line">                <span class="keyword">elif</span> i == <span class="number">0</span> <span class="keyword">and</span> j == <span class="number">0</span>:</div><div class="line">                    dp[i][j] = <span class="number">1</span></div><div class="line">                <span class="keyword">elif</span> i == <span class="number">0</span>:</div><div class="line">                    dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j<span class="number">-1</span>]</div><div class="line">                <span class="keyword">elif</span> j == <span class="number">0</span>:</div><div class="line">                    dp[i][<span class="number">0</span>] = dp[i<span class="number">-1</span>][<span class="number">0</span>]</div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    dp[i][j] = dp[i<span class="number">-1</span>][j] + dp[i][j<span class="number">-1</span>]</div><div class="line">        <span class="keyword">return</span> dp[<span class="number">-1</span>][<span class="number">-1</span>]</div></pre></td></tr></table></figure>
+<p>采用rolling list可将额外空间复杂的优化至 O（col）,代码如下<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">dp = [<span class="number">0</span>] * col</div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(row):</div><div class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(col):</div><div class="line">        <span class="keyword">if</span> obstacleGrid[i][j] == <span class="number">1</span>:</div><div class="line">            dp[j] = <span class="number">0</span></div><div class="line">        <span class="keyword">elif</span> i == <span class="number">0</span> <span class="keyword">and</span> j == <span class="number">0</span>:</div><div class="line">            dp[j] = <span class="number">1</span></div><div class="line">        <span class="keyword">elif</span> i == <span class="number">0</span>:</div><div class="line">            dp[j] = dp[j<span class="number">-1</span>]</div><div class="line">        <span class="keyword">elif</span> j == <span class="number">0</span>:</div><div class="line">            dp[j] = dp[j]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            dp[j] = dp[j] + dp[j<span class="number">-1</span>]</div><div class="line"><span class="keyword">return</span> dp[<span class="number">-1</span>]</div></pre></td></tr></table></figure></p>
+<h4 id="单序列型"><a href="#单序列型" class="headerlink" title="单序列型"></a><strong>单序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/maximum-product-subarray/" target="_blank" rel="external">Maximum Product Subarray</a>，输入量通常是一个序列，定义状态时常在开头增加一项，也因而不需要额外处理输入为None的情形。空间优化通常用一个变量代替一个列表，可从$O(n)$优化至$O(1)$。</p>
+<h4 id="双序列型"><a href="#双序列型" class="headerlink" title="双序列型"></a><strong>双序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/edit-distance/" target="_blank" rel="external">Edit Distance</a>和<a href="http://www.lintcode.com/en/problem/word-break/" target="_blank" rel="external">Word Break</a>，通常是研究两个序列或字符串之间的关系，基础情形下将状态定义成二维的，常增加一行一列来设置初始值和处理None输入。空间优化通常是用rolling list或两个lists将额外空间复杂度从$O（n^2)$降至$O(n)$。<br>例题：</p>
 <blockquote>
-<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)<br>You have the following 3 operations permitted on a word:<br>Insert a character<br>Delete a character<br>Replace a character<br>Example<br>Given word1 = “mart” and word2 = “karma”, return 3.</p>
+<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)<br>You have the following 3 operations permitted on a word:<br>Insert a character<br>Delete a character<br>Replace a character<br>Example<br>Given word1 = “mart” and word2 = “karma”, return 3.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span> </div><div class="line"><span class="comment"># @param word1 &amp; word2: Two string.</span></div><div class="line"><span class="comment"># @return: The minimum number of steps.</span></div><div class="line"></div><div class="line"><span class="comment"># dp O(m*n) where m and n represent length of word1 and word2  space O(m*n)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">minDistance</span><span class="params">(self, word1, word2)</span>:</span></div><div class="line">    row = len(word1) + <span class="number">1</span></div><div class="line">    col = len(word2) + <span class="number">1</span></div><div class="line">    dp = [[<span class="number">0</span>] * col <span class="keyword">for</span> i <span class="keyword">in</span> range(row)]</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, row):</div><div class="line">        dp[i][<span class="number">0</span>] = i </div><div class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, col):</div><div class="line">        dp[<span class="number">0</span>][j] = j</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, row):</div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, col):</div><div class="line">            <span class="keyword">if</span> word1[i<span class="number">-1</span>] == word2[j<span class="number">-1</span>]:</div><div class="line">                dp[i][j] = min(dp[i<span class="number">-1</span>][j<span class="number">-1</span>], dp[i][j<span class="number">-1</span>] + <span class="number">1</span>, dp[i<span class="number">-1</span>][j] + <span class="number">1</span>)</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                dp[i][j] = min(dp[i<span class="number">-1</span>][j<span class="number">-1</span>], dp[i<span class="number">-1</span>][j], dp[i][j<span class="number">-1</span>]) + <span class="number">1</span></div><div class="line">    <span class="keyword">return</span> dp[<span class="number">-1</span>][<span class="number">-1</span>]</div></pre></td></tr></table></figure></p>
 </blockquote>
-<pre><code>class Solution: 
-# @param word1 &amp; word2: Two string.
-# @return: The minimum number of steps.
-
-# dp O(m*n) where m and n represent length of word1 and word2  space O(m*n)
-def minDistance(self, word1, word2):
-    row = len(word1) + 1
-    col = len(word2) + 1
-    dp = [[sys.maxint for j in range(col)] for i in range(row)]
-    for i in range(row):
-        dp[i][0] = i
-    for j in range(col):
-        dp[0][j] = j
-    for i in range(1, row):
-        for j in range(1, col):
-            if word1[i-1] != word2[j-1]:
-                dp[i][j] = min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) + 1
-            else:
-                dp[i][j] = min(dp[i-1][j-1], dp[i-1][j]+1, dp[i][j-1]+1)
-    return dp[-1][-1]
-</code></pre><h4 id="背包型"><a href="#背包型" class="headerlink" title="背包型"></a><strong>背包型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/backpack/" target="_blank" rel="external">0/1背包问题</a>，</p>
+<h4 id="背包型"><a href="#背包型" class="headerlink" title="背包型"></a><strong>背包型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/backpack/" target="_blank" rel="external">0/1背包问题</a>，</p>
 <blockquote>
 <p>有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。</p>
 </blockquote>
@@ -443,21 +388,8 @@ def minDistance(self, word1, word2):
 <pre><code>for i=1..N
 for v=V..0
     f[v]=max{f[v],f[v-c[i]]+w[i]};
-</code></pre><p>空间复杂度优化过的代码如下：</p>
-<pre><code>class Solution:
-# @param m: An integer m denotes the size of a backpack
-# @param A: Given n items with size A[i]
-# @return: The maximum size
+</code></pre><p>空间复杂度优化过的代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></div><div class="line"><span class="comment"># @param m: An integer m denotes the size of a backpack</span></div><div class="line"><span class="comment"># @param A: Given n items with size A[i]</span></div><div class="line"><span class="comment"># @return: The maximum size</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">backPack</span><span class="params">(self, m, A)</span>:</span></div><div class="line">    row = len(A) + <span class="number">1</span></div><div class="line">    dp = [<span class="number">0</span>]*(m+<span class="number">1</span>)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, row):</div><div class="line">        bound = max(m - sum(A[i<span class="number">-1</span>:]), A[i<span class="number">-1</span>])</div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(m, bound<span class="number">-1</span>, <span class="number">-1</span>):</div><div class="line">            dp[j] = max(dp[j], dp[j - A[i<span class="number">-1</span>]] + A[i<span class="number">-1</span>])</div><div class="line">    <span class="keyword">return</span> dp[<span class="number">-1</span>]</div></pre></td></tr></table></figure></p>
 
-def backPack(self, m, A):
-    row = len(A) + 1
-    dp = [0]*(m+1)
-    for i in range(1, row):
-        bound = max(m - sum(A[i-1:]), A[i-1])
-        for j in range(m, bound-1, -1):
-            dp[j] = max(dp[j], dp[j - A[i-1]] + A[i-1])
-    return dp[-1]
-</code></pre>
       
     </div>
 
