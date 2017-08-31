@@ -97,7 +97,7 @@
 <meta property="og:url" content="http://dzyang.xyz/2017/03/10/动态规划及其常见类型/index.html">
 <meta property="og:site_name" content="写了再说">
 <meta property="og:description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
-<meta property="og:updated_time" content="2017-08-31T07:16:14.381Z">
+<meta property="og:updated_time" content="2017-08-31T21:20:15.998Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="动态规划及其常见类型">
 <meta name="twitter:description" content="什么是动态规划？简单来说，动态规划（Dynamic Programming）就是通过递推来解决问题。这是一种将复杂问题转化为相似子问题，并从最小子问题推演至整个问题从而解决问题的方法。原理上跟递归看起来很像，但它的特点是不重复计算子问题，而是利用之前子问题的结果直接计算当前子问题，其结果又存储起来供下一子问题利用，用空间换取时间。动态规划是一种自底向上的方法，而递归是一种自顶向下的方法。 适用于动">
@@ -410,7 +410,7 @@ for i in range(row):
         else:
             dp[j] = dp[j] + dp[j-1]
 return dp[-1]   
-</code></pre><h4 id="单序列型"><a href="#单序列型" class="headerlink" title="单序列型"></a><strong>单序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/maximum-product-subarray/" target="_blank" rel="external">Maximum Product Subarray</a>，输入量通常是一个序列，定义状态时常在开头增加一项，也因而不需要额外处理输入为None的情形。空间优化通常用一个变量代替一个列表，可从O(n)至O（1）。</p>
+</code></pre><h4 id="单序列型"><a href="#单序列型" class="headerlink" title="单序列型"></a><strong>单序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/maximum-product-subarray/" target="_blank" rel="external">Maximum Product Subarray</a>，输入量通常是一个序列，定义状态时常在开头增加一项，也因而不需要额外处理输入为None的情形。空间优化通常用一个变量代替一个列表，可从$O(n)$优化至$O(1)$。</p>
 <h4 id="双序列型"><a href="#双序列型" class="headerlink" title="双序列型"></a><strong>双序列型</strong></h4><p>典型问题为<a href="http://www.lintcode.com/en/problem/edit-distance/" target="_blank" rel="external">Edit Distance</a>和<a href="http://www.lintcode.com/en/problem/word-break/" target="_blank" rel="external">Word Break</a>，通常是研究两个序列或字符串之间的关系，基础情形下将状态定义成二维的，常增加一行一列来设置初始值和处理None输入。空间优化通常是用rolling list将额外空间复杂度从$O（n^2)$降至$O(n)$。<br>例题：</p>
 <blockquote>
 <p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)<br>You have the following 3 operations permitted on a word:<br>Insert a character<br>Delete a character<br>Replace a character<br>Example<br>Given word1 = “mart” and word2 = “karma”, return 3.</p>
