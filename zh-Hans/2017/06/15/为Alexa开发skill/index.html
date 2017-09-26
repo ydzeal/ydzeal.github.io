@@ -1,0 +1,808 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/zh-Hans/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/zh-Hans/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/zh-Hans/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Alexa,Python,Zappa," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/zh-Hans/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Alexa是Amazon推出的一款语音智能音箱，类似于将苹果Siri和音箱结合起来形成的一款产品。Amazon为Alexa开放了接口，允许用户为其增添各种各样的skills，比如可以增加一个星座分析的skill，或者增加一个实时预测校车到站时间的skill。本篇博文将介绍如何使用Flask-ask为Alexa开发一个skill，再通过Zappa部署到AWS Lambda，最终将功能发布到Amazo">
+<meta name="keywords" content="Alexa,Python,Zappa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为Amazon Alexa智能音箱开发skill">
+<meta property="og:url" content="http://dzyang.xyz/2017/06/15/为Alexa开发skill/index.html">
+<meta property="og:site_name" content="写了再说">
+<meta property="og:description" content="Alexa是Amazon推出的一款语音智能音箱，类似于将苹果Siri和音箱结合起来形成的一款产品。Amazon为Alexa开放了接口，允许用户为其增添各种各样的skills，比如可以增加一个星座分析的skill，或者增加一个实时预测校车到站时间的skill。本篇博文将介绍如何使用Flask-ask为Alexa开发一个skill，再通过Zappa部署到AWS Lambda，最终将功能发布到Amazo">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/27482292.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/9194382.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/73281307.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/39074525.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/41207105.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/64087928.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/32899847.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/56614063.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/55800703.jpg">
+<meta property="og:updated_time" content="2017-09-26T18:38:36.473Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为Amazon Alexa智能音箱开发skill">
+<meta name="twitter:description" content="Alexa是Amazon推出的一款语音智能音箱，类似于将苹果Siri和音箱结合起来形成的一款产品。Amazon为Alexa开放了接口，允许用户为其增添各种各样的skills，比如可以增加一个星座分析的skill，或者增加一个实时预测校车到站时间的skill。本篇博文将介绍如何使用Flask-ask为Alexa开发一个skill，再通过Zappa部署到AWS Lambda，最终将功能发布到Amazo">
+<meta name="twitter:image" content="http://orbgs0n4g.bkt.clouddn.com/17-9-27/27482292.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/zh-Hans/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dzyang.xyz/2017/06/15/为Alexa开发skill/"/>
+
+
+
+
+
+  <title>为Amazon Alexa智能音箱开发skill | 写了再说</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/zh-Hans/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写了再说</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">有输出才有价值</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-languages">
+          <a href="/zh-Hans/../" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            English
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/zh-Hans/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/zh-Hans/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/zh-Hans/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dzyang.xyz/zh-Hans/2017/06/15/为Alexa开发skill/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Loucs Yang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/zh-Hans/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写了再说">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                为Amazon Alexa智能音箱开发skill
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-15T00:00:00-04:00">
+                2017-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-Hans/categories/Academy/" itemprop="url" rel="index">
+                    <span itemprop="name">Academy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Alexa是Amazon推出的一款语音智能音箱，类似于将苹果Siri和音箱结合起来形成的一款产品。Amazon为Alexa开放了接口，允许用户为其增添各种各样的skills，比如可以增加一个星座分析的skill，或者增加一个实时预测校车到站时间的skill。本篇博文将介绍如何使用Flask-ask为Alexa开发一个skill，再通过Zappa部署到AWS Lambda，最终将功能发布到Amazon上去,以此了解为Alexa开发skill的全流程。<br>本篇博客要实现的一个skill，是为用户计算一个正整数是否是一个完全平方数，如果不是，则告诉用户距离最近的完全平方数。在开始之前，需要在电脑中安装Python 3.6（Lambda只支持Python 2.7/3.6），在Amazon注册一个AWS账号，以及一个alexa开发者账号。</p>
+<h2 id="一、为项目创建python的虚拟环境"><a href="#一、为项目创建python的虚拟环境" class="headerlink" title="一、为项目创建python的虚拟环境"></a>一、为项目创建python的虚拟环境</h2><p>首先，创建项目文件夹NewSkill,并在此路径下打开命令行窗口，输入如下命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; py -m venv example</div></pre></td></tr></table></figure></p>
+<p>这样就将本项目与其他版本的python或者库隔离了开来。启动虚拟环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; example\Scripts\activate</div></pre></td></tr></table></figure></p>
+<p>然后安装项目需要的框架和库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; pip install flask-ask zappa requests awscli</div></pre></td></tr></table></figure></p>
+<h2 id="二、编写程序"><a href="#二、编写程序" class="headerlink" title="二、编写程序"></a>二、编写程序</h2><p>在写代码之前，需要明白一个问题——用户的语音指令是如何转化并匹配相应程序的？<br>理解这个问题，需要了解“Utterance”和“Intent”两个概念。用户说出的每一句话都可以是一个“Utterance”，只要这句话被设置成与“skill”相关联。当Alexa接收到一个“Utterance”，接下来它会调用相应的“Intent”去执行具体的操作。对于本项目，当用户说“Alexa， is 9081 a square number?”，这就是一个“Utterance”，Alexa接收之后调用对应好的“intent”去计算并返回结果给用户。所以，“Utterance”是一个触发，“Intent”是一个动作。<br>因此在开发skill的时候，要做的事情有三件：</p>
+<ol>
+<li>设计“Intents”，决定skill执行哪些操作；</li>
+<li>设置“Utterance”，决定哪些语句触发skill及其不同intents；</li>
+<li>关联“Intents”和“Utterance”，为intents传入参数；</li>
+</ol>
+<p>具体到代码，首先返回至文件夹NewSkill下，创建一个python程序”SquareNum.py”，代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># import modules</span></div><div class="line"><span class="keyword">import</span> logging</div><div class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="keyword">from</span> flask_ask <span class="keyword">import</span> Ask, statement, question</div><div class="line"></div><div class="line"><span class="comment"># initial codes</span></div><div class="line">app = Flask(__name__)</div><div class="line">ask = Ask(app, <span class="string">"/"</span>)</div><div class="line">logging.getLogger(<span class="string">"flask_ask"</span>).setLevel(logging.DEBUG)</div><div class="line"></div><div class="line"><span class="comment"># get the square root of a number </span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">isqrt</span><span class="params">(x)</span>:</span></div><div class="line">    n = int(x)</div><div class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span></div><div class="line">    a, b = divmod(n.bit_length(), <span class="number">2</span>)</div><div class="line">    x = <span class="number">2</span>**(a+b)</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        y = (x + n//x)//<span class="number">2</span></div><div class="line">        <span class="keyword">if</span> y &gt;= x:</div><div class="line">            <span class="keyword">return</span> x</div><div class="line">        x = y</div><div class="line"></div><div class="line"><span class="comment"># a session is used to store a sequence commands, so</span></div><div class="line"><span class="comment"># alexa can understand the context</span></div><div class="line"><span class="meta">@ask.on_session_started</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_session</span><span class="params">()</span>:</span></div><div class="line">            logging.debug(<span class="string">"session started at &#123;&#125;"</span>.format(datetime.now().isoformat()))</div><div class="line"></div><div class="line"><span class="comment"># when alexa wakes up, say a welcome message        </span></div><div class="line"><span class="meta">@ask.launch</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_skill</span><span class="params">()</span>:</span></div><div class="line">    welcome_message = <span class="string">'Hi there, give me a number'</span></div><div class="line">    <span class="keyword">return</span> question(welcome_message)</div><div class="line"></div><div class="line"><span class="comment"># match with the command of cancelation    </span></div><div class="line"><span class="meta">@ask.intent('AMAZON.CancelIntent')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_cancel</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    (STATEMENT) Handles the 'cancel' built-in intention.</div><div class="line">    """</div><div class="line">    farewell_text = <span class="string">"OK, goodbye!"</span></div><div class="line">    <span class="keyword">return</span> statement(farewell_text)</div><div class="line"></div><div class="line"><span class="comment"># match with the help command</span></div><div class="line"><span class="meta">@ask.intent('AMAZON.HelpIntent')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_help</span><span class="params">()</span>:</span></div><div class="line">    help_text = <span class="string">"Give me a positive number, then I can tell if it is a square number. For example, \</span></div><div class="line">                121 is a square number and its square root is 11. Another example, 5 is not a square \</div><div class="line">                number, and the closest square number to it is 4."</div><div class="line">    <span class="keyword">return</span> question(help_text) <span class="comment"># must be a question</span></div><div class="line"></div><div class="line"><span class="comment"># match with the stop command    </span></div><div class="line"><span class="meta">@ask.intent('AMAZON.StopIntent')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_stop</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    (STATEMENT) Handles the 'stop' built-in intention.</div><div class="line">    """</div><div class="line">    farewell_text = <span class="string">"Goodbye!"</span></div><div class="line">    <span class="keyword">return</span> statement(farewell_text)</div><div class="line"></div><div class="line"><span class="comment"># check given number and/or return the cloest square number  </span></div><div class="line"><span class="meta">@ask.intent("AnswerIntent", convert=&#123;'number': int&#125;)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">Check_squareNum</span><span class="params">(number)</span>:</span></div><div class="line">    <span class="keyword">if</span> number <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        notMatch = <span class="string">'Give me a positive number, then I can check if it is a square number'</span></div><div class="line">        <span class="keyword">return</span> question(notMatch)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            num = isqrt(number)</div><div class="line">            isSquare = <span class="string">'Yes, &#123;0&#125; is a square number, its square root is &#123;1&#125;'</span></div><div class="line">            <span class="keyword">if</span> num**<span class="number">2</span> == number:</div><div class="line">                <span class="keyword">return</span> statement(isSquare.format(number, num)) </div><div class="line">            smaller = num ** <span class="number">2</span>    </div><div class="line">            larger = (num+<span class="number">1</span>) ** <span class="number">2</span></div><div class="line">            notSquare = <span class="string">'&#123;0&#125; is not a square number, the closest square number to it is &#123;1&#125;, and its square root is &#123;2&#125;'</span></div><div class="line">            <span class="keyword">if</span> (larger - number) &gt; (number - smaller): </div><div class="line">                <span class="keyword">return</span> statement(notSquare.format(number, smaller, num))</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                <span class="keyword">return</span> statement(notSquare.format(number, larger, num+<span class="number">1</span>))           </div><div class="line">        <span class="keyword">except</span>:</div><div class="line">            errInput = <span class="string">'Sorry, I cannot work it out because the number is too large'</span></div><div class="line">            <span class="keyword">return</span> statement(errInput)</div><div class="line">            </div><div class="line"><span class="comment"># handle illegal input</span></div><div class="line"><span class="meta">@ask.intent('WrongNumber')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">WrongNum</span><span class="params">()</span>:</span></div><div class="line">    errNum = <span class="string">"Negative numbers are not square numbers, please give me a positive number"</span></div><div class="line">    <span class="keyword">return</span> statement(errNum)</div><div class="line">    </div><div class="line"><span class="comment"># finish a session           </span></div><div class="line"><span class="meta">@ask.session_ended</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">session_ended</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> statement(<span class="string">""</span>)</div><div class="line"></div><div class="line"><span class="comment"># program entrance                </span></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    app.run(debug=<span class="keyword">True</span>)</div></pre></td></tr></table></figure></p>
+<h2 id="三、设置AWS"><a href="#三、设置AWS" class="headerlink" title="三、设置AWS"></a>三、设置AWS</h2><p>程序要托管在AWS Lambda服务上，因此首先需要注册一个AWS账号，配置一个IAM(Identity and Access Management)用户来管理程序。</p>
+<ol>
+<li>注册好AWS以后，打开<a href="https://console.aws.amazon.com/iam/home#/home" target="_blank" rel="external">IAM console</a>；</li>
+<li>在左侧目录中，选择“users”；</li>
+<li>选择“add user”；</li>
+<li>填写信息如图所示；<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/27482292.jpg" alt=""></li>
+<li>在”Permissions”页面，选择“Attach existing policies directly”；</li>
+<li>在“policy type”项，下拉选择“AdministratorAccess”，如图所示；<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/9194382.jpg" alt=""></li>
+<li>在“Review”页面，确认信息并点击下一步；</li>
+<li>在“complete”页面，将“Access key ID”和“Secret access key”，复制保存下来，因为密码之后就不能再看了；<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/73281307.jpg" alt=""></li>
+</ol>
+<h2 id="四、在本地连接AWS账号"><a href="#四、在本地连接AWS账号" class="headerlink" title="四、在本地连接AWS账号"></a>四、在本地连接AWS账号</h2><p>在NewSkill文件夹下打开命令行窗口，输入：<code>&gt;&gt;&gt; aws configure</code>接下来会弹出对话要求输入刚刚保存的“<em>Access key ID</em>”和“<em>Secret access key</em>”。在“<em>Default region name</em>”下，选择距离自己地理位置最近的服务区域，比如“us-east-1”。最后在“ <em>Default output format</em>”下直接按“回车”键接受默认设置。</p>
+<h2 id="五、用Zappa部署程序到Lambda"><a href="#五、用Zappa部署程序到Lambda" class="headerlink" title="五、用Zappa部署程序到Lambda"></a>五、用Zappa部署程序到Lambda</h2><p>命令行输入：<code>&gt;&gt;&gt; zappa init</code>，接下来会有几个对话框，在“<em>we found the following profiles: default and alexa…</em>”对话下输入“<em>alexa</em>”,其余对话按“回车”接受默认设置即可。<br>上述完成之后命令行分别输入：<br><code>&gt;&gt;&gt; zappa deploy dev</code><br><code>&gt;&gt;&gt; zappa update dev</code><br>成功部署之后，zappa会返回一个链接，类似于“<a href="https://8nxiwwl7n1.execute-api.us-east-1.amazonaws.com/dev”。它表示skill的核心程序已经部署到了AWS账号下的Lambda服务上。将这个链接保存下来。" target="_blank" rel="external">https://8nxiwwl7n1.execute-api.us-east-1.amazonaws.com/dev”。它表示skill的核心程序已经部署到了AWS账号下的Lambda服务上。将这个链接保存下来。</a></p>
+<h2 id="六、在Alexa开发者控制台设置skill的信息"><a href="#六、在Alexa开发者控制台设置skill的信息" class="headerlink" title="六、在Alexa开发者控制台设置skill的信息"></a>六、在Alexa开发者控制台设置skill的信息</h2><ol>
+<li>登录“ <a href="https://developer.amazon.com”；" target="_blank" rel="external">https://developer.amazon.com”；</a></li>
+<li>选择“Alexa skills kit”；<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/39074525.jpg" alt=""></li>
+<li>点击右上角“add a new skill”;</li>
+</ol>
+<p>接下来会有6个需要设置的板块，完成之后就发布了一个skill。</p>
+<ol>
+<li>在第一页，“<em>Name</em>”下输入skill的名称，用于显示在app商店，“<em>Invocation Name</em>”输入唤醒skill时的名称，二者可以相同也可以不同；<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/41207105.jpg" alt=""></li>
+<li>保存并进入下一页，这一页很重要，定义了“intents”和“utterance”， a. “Intent Schema”栏，这里定义了skill有哪些intents,其类型和输入量是什么。type为“AMAZON.XXX”格式的为内置类型，不需要自定义，引用即可。如需自定义Intent的输入值，在“Custom Slot Types”栏定义后即可引用。<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"intents"</span>: [</div><div class="line">    &#123;</div><div class="line">      <span class="attr">"slots"</span>: [</div><div class="line">        &#123;</div><div class="line">          <span class="attr">"name"</span>: <span class="string">"number"</span>,</div><div class="line">          <span class="attr">"type"</span>: <span class="string">"AMAZON.NUMBER"</span></div><div class="line">        &#125;</div><div class="line">      ],</div><div class="line">      <span class="attr">"intent"</span>: <span class="string">"AnswerIntent"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">"slots"</span>: [</div><div class="line">        &#123;</div><div class="line">          <span class="attr">"name"</span>: <span class="string">"Negative"</span>,</div><div class="line">          <span class="attr">"type"</span>: <span class="string">"AMAZON.NUMBER"</span></div><div class="line">        &#125;</div><div class="line">      ],</div><div class="line">      <span class="attr">"intent"</span>: <span class="string">"WrongNumber"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">"intent"</span>: <span class="string">"AMAZON.HelpIntent"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">"intent"</span>: <span class="string">"AMAZON.StopIntent"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">"intent"</span>: <span class="string">"AMAZON.CancelIntent"</span></div><div class="line">    &#125;</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>b. 在“Sample Utterances”栏，设置各个intents与哪些语句对应起来，这里不需要为Alexa内置的“StopIntent”等intents设置sample utterance，只需要为自定义的intents设置。如果intent有传入的参数，则在sample utterance中用“{}”按顺序将参数括起来，比如：</p>
+<blockquote>
+<p>AnswerIntent is {number} a square number<br>AnswerIntent is {number} a perfect number<br>AnswerIntent is {number} the square of an integer<br>AnswerIntent is {number} the result of multiplying a number by itself<br>AnswerIntent {number}<br>AnswerIntent what is the square root of {number}<br>AnswerIntent square root {number}<br>WrongNumber negative {Negative}<br>WrongNumber minus {Negative}</p>
+</blockquote>
+<p>utterance不需要预测用法所有可能的表达，alexa会举一反三，因此只需要尽量覆盖不同不同类型的语句和关键词即可。</p>
+<ol>
+<li>保存好上一步后进入“configuration”页，在“<em>Endpoint</em>”选择“<em>HTTPS</em>”，并将之前保存的链接填入“<em>Default</em>”栏，如图；<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/64087928.jpg" alt=""></li>
+<li>保存好之后进入“SSL Certificate”页，选择第二项“<em>My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority</em>”；</li>
+<li>在“Publishing Information”页，填写发布skill需要用到的信息,主要注意“<em>Example Phrases</em>”栏需要从之前的sample utterance选取填写。然后为skill制作图标用于app商城。<img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/32899847.jpg" alt=""><br><img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/56614063.jpg" alt=""><br><img src="http://orbgs0n4g.bkt.clouddn.com/17-9-27/55800703.jpg" alt=""><ol>
+<li>在最后一页，确认相关信息后提交，待skill通过审查后，就成功发布了。</li>
+</ol>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Flask-ask为Python的开发提供了方便的函数处理intents，使开发者能专注于实现功能，Zappa则一键实现AWS Lambda的配置，免去了自行设置的烦恼。如此，真正需要关注的是功能开发和理解“Intents”、“Utterance”和核心代码之间的关系，处理好输入输出的类型。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Loucs Yang
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://dzyang.xyz/2017/06/15/为Alexa开发skill/" title="为Amazon Alexa智能音箱开发skill">http://dzyang.xyz/2017/06/15/为Alexa开发skill/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+       本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议，转载请保留作者及出处。
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/zh-Hans/tags/Alexa/" rel="tag"># Alexa</a>
+          
+            <a href="/zh-Hans/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/zh-Hans/tags/Zappa/" rel="tag"># Zappa</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/zh-Hans/2017/03/10/动态规划及其常见类型/" rel="prev" title="动态规划及其常见类型">
+                动态规划及其常见类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+<!--           <img class="site-author-image" itemprop="image"
+               src="/zh-Hans/images/avatar.gif"
+               alt="Loucs Yang" /> -->
+          <p class="site-author-name" itemprop="name">Loucs Yang</p>
+           
+              <p class="site-description motion-element" itemprop="description">locus@udel.edu</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/zh-Hans/archives">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/zh-Hans/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/zh-Hans/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、为项目创建python的虚拟环境"><span class="nav-number">1.</span> <span class="nav-text">一、为项目创建python的虚拟环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、编写程序"><span class="nav-number">2.</span> <span class="nav-text">二、编写程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、设置AWS"><span class="nav-number">3.</span> <span class="nav-text">三、设置AWS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、在本地连接AWS账号"><span class="nav-number">4.</span> <span class="nav-text">四、在本地连接AWS账号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、用Zappa部署程序到Lambda"><span class="nav-number">5.</span> <span class="nav-text">五、用Zappa部署程序到Lambda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、在Alexa开发者控制台设置skill的信息"><span class="nav-number">6.</span> <span class="nav-text">六、在Alexa开发者控制台设置skill的信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-home"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Loucs Yang</span>
+</div>
+
+<!-- 
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+ -->
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/zh-Hans/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/zh-Hans/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/zh-Hans/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/zh-Hans/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
