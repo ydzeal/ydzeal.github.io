@@ -1,0 +1,829 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/zh-Hans/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/zh-Hans/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/zh-Hans/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="AWS,CUDA," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/zh-Hans/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="CUDA是Nvidia开发的通用并行计算平台，它使得开发者可以利用GPU进行编程。遗憾的是，CUDA只支持Nvidia公司自己的GPU。因此，当计算机使用其他品牌的显卡时，你需要使用远程的GPU来运行CUDA程序。AWS就是其中的一个选择，配置丰富，价格低廉，针对学生还有100刀不等的credit。 本文介绍的是在windows系统上利用AWS上搭建CUDA的开发环境。首先需要在 https://">
+<meta name="keywords" content="AWS,CUDA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在AWS上配置CUDA及Nsight">
+<meta property="og:url" content="http://dzyang.xyz/2017/05/25/在AWS上配置虚拟主机/index.html">
+<meta property="og:site_name" content="写了再说">
+<meta property="og:description" content="CUDA是Nvidia开发的通用并行计算平台，它使得开发者可以利用GPU进行编程。遗憾的是，CUDA只支持Nvidia公司自己的GPU。因此，当计算机使用其他品牌的显卡时，你需要使用远程的GPU来运行CUDA程序。AWS就是其中的一个选择，配置丰富，价格低廉，针对学生还有100刀不等的credit。 本文介绍的是在windows系统上利用AWS上搭建CUDA的开发环境。首先需要在 https://">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/19373573.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/52639999.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/47090153.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/48700943.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/17728871.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/22443369.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/52278792.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-19/37747910.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/82258918.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/6373878.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/72425962.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/63990085.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/96619579.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/51502586.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/83811434.jpg">
+<meta property="og:image" content="http://orbgs0n4g.bkt.clouddn.com/17-12-23/37416215.jpg">
+<meta property="og:updated_time" content="2017-12-22T22:11:37.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何在AWS上配置CUDA及Nsight">
+<meta name="twitter:description" content="CUDA是Nvidia开发的通用并行计算平台，它使得开发者可以利用GPU进行编程。遗憾的是，CUDA只支持Nvidia公司自己的GPU。因此，当计算机使用其他品牌的显卡时，你需要使用远程的GPU来运行CUDA程序。AWS就是其中的一个选择，配置丰富，价格低廉，针对学生还有100刀不等的credit。 本文介绍的是在windows系统上利用AWS上搭建CUDA的开发环境。首先需要在 https://">
+<meta name="twitter:image" content="http://orbgs0n4g.bkt.clouddn.com/17-6-11/19373573.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/zh-Hans/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dzyang.xyz/2017/05/25/在AWS上配置虚拟主机/"/>
+
+
+
+
+
+  <title>如何在AWS上配置CUDA及Nsight | 写了再说</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/zh-Hans/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写了再说</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">有输出才有价值</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-languages">
+          <a href="/zh-Hans/../" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            English
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/zh-Hans/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/zh-Hans/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/zh-Hans/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dzyang.xyz/zh-Hans/2017/05/25/在AWS上配置虚拟主机/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Locus Yang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/zh-Hans/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写了再说">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何在AWS上配置CUDA及Nsight
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-25T00:00:00-04:00">
+                2017-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-Hans/categories/Academy/" itemprop="url" rel="index">
+                    <span itemprop="name">Academy</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>CUDA是Nvidia开发的通用并行计算平台，它使得开发者可以利用GPU进行编程。遗憾的是，CUDA只支持Nvidia公司自己的GPU。因此，当计算机使用其他品牌的显卡时，你需要使用远程的GPU来运行CUDA程序。AWS就是其中的一个选择，配置丰富，价格低廉，针对学生还有100刀不等的credit。</p>
+<p>本文介绍的是在windows系统上利用AWS上搭建CUDA的开发环境。首先需要在 <a href="https://aws.amazon.com" target="_blank" rel="external">https://aws.amazon.com</a> 注册一个AWS账号。接下来分为三大步骤：</p>
+<ol>
+<li><strong>在AWS上配置虚拟主机</strong></li>
+<li><strong>连接虚拟主机及设置远程桌面</strong></li>
+<li><strong>在虚拟主机上安装CUDA</strong></li>
+</ol>
+<h2 id="在AWS上配置虚拟主机"><a href="#在AWS上配置虚拟主机" class="headerlink" title="在AWS上配置虚拟主机"></a>在AWS上配置虚拟主机</h2><ol>
+<li>登录AWS，在右上角选择地区为“US East(N.Virginia)”，通常是选择离你最近的服务地区，但目前只有US East提供GPU的配置。在Service下选择EC2</li>
+<li><p>因为GPU计算的配置默认是关闭的，所以在新建主机（实例）之前，需要向Amazon申请increase limit。在左边栏选择“Limit”，找到<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/19373573.jpg" alt=""><br>然后点击右边的“request limit increase”</p>
+</li>
+<li><p>在“create case”下，填写申请信息如下：<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/52639999.jpg" alt=""><br>之后客服会主动联系，申请通过后之后开始下一步</p>
+</li>
+<li><p>新建虚拟主机，点击蓝色按钮 “Launch Instance”<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/47090153.jpg" alt=""></p>
+</li>
+<li><p>选择操作系统。根据Nvidia的系统选择推荐<a href="https://developer.nvidia.com/cuda-downloads?target_os=Linux&amp;target_arch=x86_64&amp;target_distro=Ubuntu&amp;target_version=1704" target="_blank" rel="external">列表</a>，在此选择Ubuntu 16.04，如下图<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/48700943.jpg" alt=""></p>
+</li>
+<li><p>选择硬件配置。“GPU compute”都是适用于GPU计算的，根据配置不同，单价也不同，在此选择p2.xlarge，然后点击next<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/17728871.jpg" alt=""></p>
+</li>
+<li><p>在“configure instance”页接受默认设置，next</p>
+</li>
+<li><p>添加硬盘存储容量,。根据需要设定硬盘大小，在此选择“30GB”，next<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/22443369.jpg" alt=""></p>
+</li>
+<li><p>为instance添加自己的标签, 然后点击next</p>
+</li>
+<li>选择该instance要打开的网络端口。如下图，其中SSH用来远程登录，RDP用于远程桌面，如需要也可以打开HTTP端口。把”Source”改为“Anywhere”，点击“Review and Launch”<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-6-11/52278792.jpg" alt=""></li>
+<li>确认无误后，点击“Launch”，此时会弹出窗口设置密钥，如下图，选择“Create a new key pair”, 并取一个名字。下载密钥到本地，并点击“lauch instances”<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-19/37747910.jpg" alt=""></li>
+</ol>
+<h2 id="连接虚拟主机及设置远程桌面"><a href="#连接虚拟主机及设置远程桌面" class="headerlink" title="连接虚拟主机及设置远程桌面"></a>连接虚拟主机及设置远程桌面</h2><p>接下来，我们将要使用ssh连接在上一部分设置好的虚拟主机。如果本地系统是Windows，则需要使用PuTTY。<br>PuTTY进行ssh连接时，使用的是.ppk格式的密钥，所以需要先将上一部分保存的.gem密钥进行格式转化。</p>
+<ol>
+<li><p>打开PuTTYgen工具，在Type of key to generate栏选择SSH-2 RSA，点击“Load”导入gem密钥，然后点击“Save private key”导出ppk格式的密钥供PuTTY使用<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/82258918.jpg" alt=""></p>
+</li>
+<li><p>打开PuTTY，在”Host Name”栏，输入”<em>user_name@public_dns_name</em>“,比如 “ubuntu@ec2-12-345-67-89.compute-1.amazonaws.com”，在”Port”栏输入“22”，在“connection type”栏选择“SSH”，如下图<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/6373878.jpg" alt=""></p>
+</li>
+<li><p>在左侧目录选择“Connection”-&gt;”SSH”-&gt;”Auth”, 点击Browse导入保存好的.ppk密钥，点击”Open”开始连接虚拟主机<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/72425962.jpg" alt=""></p>
+</li>
+<li><p>登录之后接下来需要安装远程桌面，首先在命令行输入“<em>sudo apt update &amp;&amp; sudo apt upgrade</em>”以更新APT安装工具<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/63990085.jpg" alt=""></p>
+</li>
+<li><p>命令行输入“<em>sudo sed -i ‘s/^PasswordAuthentication no/PasswordAuthentication yes/‘ /etc/ssh/sshd_config</em>”允许密码登录，再输入“<em>sudo /etc/init.d/ssh restart</em>”重启Linux使更改生效</p>
+</li>
+<li>输入“<em>sudo passwd ubuntu</em>”，设置登录密码</li>
+<li>输入“<em>sudo apt install xrdp xfce4 xfce4-goodies tightvncserver</em>”安装xrdp远程桌面程序</li>
+<li>输入“<em>echo xfce4-session&gt; /home/ubuntu/.xsession</em>”使之成为默认RDP</li>
+<li>输入“<em>sudo cp /home/ubuntu/.xsession /etc/skel</em>”使之对所有用户生效</li>
+<li>输入“<em>sudo sed -i ‘0,/-1/s//ask-1/‘ /etc/xrdp/xrdp.ini</em>”以允许更改端口号</li>
+<li>输入“<em>sudo service xrdp restart</em>”重启xrdp</li>
+<li><p>在windows本地系统，打开系统自带的rdp,输入虚拟主机的DNS号，点击“连接”<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/96619579.jpg" alt=""></p>
+</li>
+<li><p>在登录界面，输入用户名和密码如下图所示，点击OK后登录至Linux系统<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/51502586.jpg" alt=""></p>
+</li>
+</ol>
+<p><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/83811434.jpg" alt=""></p>
+<h2 id="在虚拟主机上安装CUDA"><a href="#在虚拟主机上安装CUDA" class="headerlink" title="在虚拟主机上安装CUDA"></a>在虚拟主机上安装CUDA</h2><p>接下来按照常规方式安装CUDA即可。</p>
+<ol>
+<li>登录Nvidia网站找到CUDA下载<a href="https://developer.nvidia.com/cuda-downloads?target_os=Linux&amp;target_arch=x86_64&amp;target_distro=Ubuntu&amp;target_version=1604&amp;target_type=runfilelocal" target="_blank" rel="external">页面</a>，选择虚拟主机的相应配置如下图<br><img src="http://orbgs0n4g.bkt.clouddn.com/17-12-23/37416215.jpg" alt=""></li>
+<li>在“Installer Type”栏选择合适的下载方式, 按照官网提示进行下载即可。</li>
+</ol>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li>AWS EC2是需要收费的，本文选择的”P2.xlarge”在美国区单价为$0.9/hour，但是注册AWS Education账号可以获得100美元的credit。</li>
+<li>安装CUDA时,可能需要root权限，在命令行输入<em>“sudo su”</em>，然后设置root密码<em>“passwd root”</em>,即可获得root权限。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Locus Yang
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://dzyang.xyz/2017/05/25/在AWS上配置虚拟主机/" title="如何在AWS上配置CUDA及Nsight">http://dzyang.xyz/2017/05/25/在AWS上配置虚拟主机/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+       本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议，转载请保留作者及出处。
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/zh-Hans/tags/AWS/" rel="tag"># AWS</a>
+          
+            <a href="/zh-Hans/tags/CUDA/" rel="tag"># CUDA</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/zh-Hans/2017/06/15/为Alexa开发skill/" rel="next" title="为Amazon Alexa智能音箱开发skill">
+                <i class="fa fa-chevron-left"></i> 为Amazon Alexa智能音箱开发skill
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/zh-Hans/2017/05/23/Heap及相关的两道经典算法题/" rel="prev" title="Heap及相关的两道经典算法题">
+                Heap及相关的两道经典算法题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+<!--           <img class="site-author-image" itemprop="image"
+               src="/zh-Hans/images/avatar.gif"
+               alt="Locus Yang" /> -->
+          <p class="site-author-name" itemprop="name">Locus Yang</p>
+           
+              <p class="site-description motion-element" itemprop="description">locus@udel.edu</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/zh-Hans/archives">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/zh-Hans/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/zh-Hans/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#在AWS上配置虚拟主机"><span class="nav-number">1.</span> <span class="nav-text">在AWS上配置虚拟主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接虚拟主机及设置远程桌面"><span class="nav-number">2.</span> <span class="nav-text">连接虚拟主机及设置远程桌面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在虚拟主机上安装CUDA"><span class="nav-number">3.</span> <span class="nav-text">在虚拟主机上安装CUDA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">4.</span> <span class="nav-text">注意事项</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-home"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Locus Yang</span>
+</div>
+
+<!-- 
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+ -->
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/zh-Hans/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/zh-Hans/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/zh-Hans/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/zh-Hans/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/zh-Hans/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/zh-Hans/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
